@@ -16,7 +16,7 @@ ________________________________________________________________________________
 
 - *run_AFI_model.py*			runs the simulations with the baseline male and female models
 - *AFI_ODEfile.cpp*			source file containing ODEs for the Fogli Iseppe et al. model
-- *AFI_ODEfile.cpp*			compiled file containing ODEs for the Fogli Iseppe et al. model
+- *AFI_ODEfile.out*			compiled file containing ODEs for the Fogli Iseppe et al. model: ```icpc -O3 AFI_ODEfile.cpp -o AFI_ODEfile.out```. May require ```#include <sstream>``` if using ```g++```.
 - APInfo.hpp				helper file for metrics extraction
 - *Drug_effects_all_\*X.dat*		parameters for simulating the drug set at different doses
 
@@ -43,6 +43,10 @@ ________________________________________________________________________________
 - Joblib
 - Scikit-Learn
 - Hyperopt
+- 
+### List of programming environment
+- Python (tested with python 3.7.3)
+- C++ compiler (tested with intel compiler icpc)
 
 ### Run the simulations
 
@@ -55,32 +59,33 @@ ________________________________________________________________________________
 
 ### Create the datasets
 
-1. Move the *all_drugs_epi_july2020.xlsx* file in the *simulations* folder.
+1. Make a copy of the *all_drugs_epi_july2020.xlsx* file in the *AFI_model* folder.
 
-2. The *create_df_all_with_EAD_flag.py* script expects a specific organization of the folders containing the data. In detail, the directory tree inside the *data* folder should follow the structure below:
-- Sex folder (*Male* or *Female*)
-- Hormone folder (*NH* for no hormones, *DHT_10* for low level of testosterone, *DHT_35* for high level of testosterone, *EF* for early follicular phase, *LF* for late follicular phase, *LU* for luteal phase)
-		
-Create the new folders in *data* and move the simulated data in the appropriate sex- and hormone-specific subfolder.
+2. The *create_df_all_with_EAD_flag.py* script expects a specific organization of the folders containing the data. In detail, the directory tree inside the *data* folder should follow the structure below:  
+- Sex folder (*Male* or *Female*)  
+- Hormone folder (*NH* for no hormones, *DHT_10* for low level of testosterone, *DHT_35* for high level of testosterone, *EF* for early follicular phase, *LF* for late follicular phase, *LU* for luteal phase, see ```run_AFI_model.py``` for hormone details, default is *NH*).  
+Create these new folders in *data* and move the simulated data in the appropriate sex- and hormone-specific subfolder, e.g.,  
+- Male/NH/BCL.500.***  
+- Female/NH/BCL.500.***  
 
-3. Create a copy of the *create_df_all_with_EAD_flag.py* script in each sex- and hormone-specific subfolder and run it. The script will generate a csv file containing the measured biomarkers.
+3. Create a copy of the *create_df_all_with_EAD_flag.py* script in each sex- and hormone-specific subfolder and run the script ```python create_df_all_with_EAD_flag.py ```. The script will generate a csv file containing the measured biomarkers.
 
-4. Create a copy of the *create_training_and_test_dfs.py* script in each sex- and hormone-specific subfolder and run it. The script will split the previously created csv file in two files containing the delta biomarkers (drug value - control value) for the training (high risk and safe drugs) and test (intermediate risk) sets.
+4. Create a copy of the *create_training_and_test_dfs.py* script in each sex- and hormone-specific subfolder and run the script ``` python create_training_and_test_dfs.py ```. The script will split the previously created csv file in two files containing the delta biomarkers (drug value - control value) for the training (high risk and safe drugs) and test (intermediate risk) sets.
 
 
 ### Run the recursive feature elimination algorithm
 
 1. Enter in the *RFE* folder.
 
-2. Create a *data* folder.
+2. Create two folders under *REF*  
+- *data* folder.  
+- *results* folder    
 
 3. Move the training csv files created during the previous step in the *data* folder.
 
-4. Create a *results* folder.
+4. Run the python script named *rfe_lr_bayes_optimized_repeated_n_times.py* if you want to train a logistic regression classifier, or *rfe_svm_bayes_optimized_repeated_n_times.py* if you want to train a support vector machine classifier. May require ```pip install lightgbm scikit-learn``` if ```lightgbm``` is not present.
 
-5. Run the python script named *rfe_lr_bayes_optimized_repeated_n_times.py* if you want to train a logistic regression classifier, or *rfe_svm_bayes_optimized_repeated_n_times.py* if you want to train a support vector machine classifier.
-
-6. Customizable variables: *n_jobs* is the maximal number of jobs (parallelization) the script will do, the range function on the same line of code (108 for lr, 109 for svm) decides how many times you want to repeat the entire RFE process for each input file, *n_iter* is the number of iterations for each optimization step (I generally used 200).
+5. Customizable variables: *n_jobs* is the maximal number of jobs (parallelization) the script will do, the range function on the same line of code (108 for lr, 109 for svm) decides how many times you want to repeat the entire RFE process for each input file, *n_iter* is the number of iterations for each optimization step (I generally used 200).
 
 ________________________________________________________________________________________________________________
 
