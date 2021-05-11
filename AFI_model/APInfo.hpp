@@ -5,7 +5,7 @@
     // 17:12:20, Wed, 06-February-2019, By Haibo
     Update: to include more biomarkers of AP and CaT
 
-    Update: accurate measurement of RMP. (or MDP most distolic Potential)
+    Update: accurate measurement of RMP. (or MDP maximum distolic Potential)
 
 
     Haibo Ni
