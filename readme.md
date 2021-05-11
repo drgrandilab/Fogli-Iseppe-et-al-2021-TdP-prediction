@@ -10,7 +10,7 @@ ________________________________________________________________________________
 
 ## Contents:
 
-- *readme.txt*		 		this file
+- *readme.md*		 		this file
 
 ### "AFI_model" folder
 
